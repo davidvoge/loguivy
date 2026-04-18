@@ -3,8 +3,8 @@
   "name": "quartiers-loguivy-plougras",
   "properties": {
     "insee": "22131",
-    "source": "OpenStreetMap — nœuds « place » et toponymes du finage (ODbL), avril 2026. Les secteurs sans lieu homonyme utilisent un repère nommé proche ; le contour communal provient de l'API Découpage administratif (Admin Express).",
-    "disclaimer": "Représentation pédagogique par zones d'accroche, sans valeur cadastrale."
+    "source": "OpenStreetMap (ODbL), avril 2026 — points nommés ou repères patrimoniaux à l’intérieur du finage 22131. Le contour communal provient de l’API Découpage administratif (Admin Express).",
+    "disclaimer": "Repères cartographiques ; le libellé « quartier » peut regrouper plusieurs lieux-dits. Les épinglettes matérialisent un point d’accroche, pas une surface cadastrale."
   },
   "features": [
     {
@@ -13,7 +13,6 @@
         "id": "bourg",
         "nom": "Le Bourg",
         "desc": "Centre administratif, école, commerces de proximité, agence postale.",
-        "radiusM": 650,
         "locationSource": "OpenStreetMap — nœud place=village « Loguivy-Plougras »"
       },
       "geometry": { "type": "Point", "coordinates": [-3.4869996, 48.5215063] }
@@ -24,7 +23,6 @@
         "id": "dresnay",
         "nom": "Le Dresnay",
         "desc": "Hameau au sud-est, gîte communal et chemins de randonnée.",
-        "radiusM": 600,
         "locationSource": "OpenStreetMap — nœud place=village « Le Dresnay »"
       },
       "geometry": { "type": "Point", "coordinates": [-3.4477469, 48.5026386] }
@@ -35,8 +33,7 @@
         "id": "kerprigent",
         "nom": "Kerprigent",
         "desc": "Bocage et hameaux dispersés vers le nord-ouest.",
-        "radiusM": 720,
-        "locationSource": "OpenStreetMap — nœud « Kergrist » (secteur nord-ouest, repère du quartier décrit)"
+        "locationSource": "OpenStreetMap — nœud « Kergrist » (nord-ouest du finage)"
       },
       "geometry": { "type": "Point", "coordinates": [-3.5294109, 48.5334498] }
     },
@@ -46,10 +43,9 @@
         "id": "loc-maria",
         "nom": "Loc-Maria",
         "desc": "Chapelle et patrimoine religieux, concerts estivaux.",
-        "radiusM": 550,
-        "locationSource": "OpenStreetMap — chapelle Notre-Dame (repère patrimonial du secteur)"
+        "locationSource": "OpenStreetMap — chapelle Saint-Ivy, Kérouégoat (repère dans la commune ; le toponyme « Loc-Maria » n’est pas cartographié tel quel sur OSM)"
       },
-      "geometry": { "type": "Point", "coordinates": [-3.4472365, 48.5027505] }
+      "geometry": { "type": "Point", "coordinates": [-3.4891541, 48.5235755] }
     },
     {
       "type": "Feature",
@@ -57,10 +53,9 @@
         "id": "kergadiou",
         "nom": "Kergadiou",
         "desc": "Hameaux vallonnés, vue vers la forêt de Beffou.",
-        "radiusM": 680,
-        "locationSource": "OpenStreetMap — hameau « Trogorre » (secteur nord-est / vallons)"
+        "locationSource": "OpenStreetMap — lieu « Kerguelvent » (est du finage ; toponyme voisin, sans homonyme exact « Kergadiou » sur OSM)"
       },
-      "geometry": { "type": "Point", "coordinates": [-3.4588328, 48.5191331] }
+      "geometry": { "type": "Point", "coordinates": [-3.4313442, 48.510533] }
     },
     {
       "type": "Feature",
@@ -68,10 +63,9 @@
         "id": "kerguiniou",
         "nom": "Kerguiniou",
         "desc": "Secteur ouest, chemins creux et fontaines.",
-        "radiusM": 640,
-        "locationSource": "OpenStreetMap — localité « Kerhuon » (secteur ouest)"
+        "locationSource": "OpenStreetMap — lieu « Kerguélen » (pont sur le Guic, ouest / nord-ouest du finage)"
       },
-      "geometry": { "type": "Point", "coordinates": [-3.5326566, 48.4960912] }
+      "geometry": { "type": "Point", "coordinates": [-3.4919864, 48.5443593] }
     },
     {
       "type": "Feature",
@@ -79,7 +73,6 @@
         "id": "coat-glas",
         "nom": "Coat-Glas",
         "desc": "Landes et haies, accès sentiers pédestres.",
-        "radiusM": 620,
         "locationSource": "OpenStreetMap — localité « Bec'h Coat »"
       },
       "geometry": { "type": "Point", "coordinates": [-3.5014972, 48.5384867] }
@@ -90,7 +83,6 @@
         "id": "pen-ar-hoat",
         "nom": "Pen-ar-Hoat",
         "desc": "Sud du territoire, liaison vers les routes de Plougras.",
-        "radiusM": 520,
         "locationSource": "OpenStreetMap — lieu-dit « Pen ar Hoat »"
       },
       "geometry": { "type": "Point", "coordinates": [-3.4888197, 48.5355589] }
@@ -101,8 +93,7 @@
         "id": "keribyou",
         "nom": "Keribyou",
         "desc": "Nord-est, habitat groupé et lotissements ruraux.",
-        "radiusM": 580,
-        "locationSource": "OpenStreetMap — hameau « Kerverder » (secteur nord-est)"
+        "locationSource": "OpenStreetMap — hameau « Kerverder » (nord-est du finage)"
       },
       "geometry": { "type": "Point", "coordinates": [-3.4818619, 48.5381192] }
     }

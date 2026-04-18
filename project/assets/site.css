@@ -50,6 +50,55 @@ body {
   font-size: var(--fs-body);
 }
 
+/* ── Typographie mobile : titres moins imposants ─────────────── */
+@media (max-width: 640px) {
+  body {
+    --fs-display: calc(40px * var(--a11y-scale));
+    --fs-h1:       calc(28px * var(--a11y-scale));
+    --fs-h2:       calc(24px * var(--a11y-scale));
+    --fs-h3:       calc(19px * var(--a11y-scale));
+    --fs-h4:       calc(17px * var(--a11y-scale));
+  }
+  .hero__title {
+    font-size: clamp(26px, 6.5vw, 64px);
+    line-height: 1.08;
+  }
+  .hero__lede {
+    font-size: 16px;
+  }
+  .section__title {
+    font-size: clamp(22px, 4.5vw, 40px);
+  }
+  .page-header__title {
+    font-size: clamp(24px, 5.2vw, 52px);
+  }
+  .rubric-tile__title {
+    font-size: 22px;
+  }
+  .rubric-tile__count {
+    font-size: 48px;
+  }
+  .villages-title {
+    font-size: 28px;
+  }
+  .demarche-group__title {
+    font-size: 20px;
+  }
+  .key-figures__n {
+    font-size: 34px;
+  }
+  .site-footer__mark {
+    font-size: 20px;
+  }
+  body.variation-b .hero__title {
+    font-size: clamp(28px, 9vw, 104px);
+    line-height: 1.02;
+  }
+  body.variation-b .hero-mosaic-cell__title {
+    font-size: 22px;
+  }
+}
+
 /* ── Layout ────────────────────────────────────────────────── */
 .container {
   max-width: 1200px;
@@ -1276,33 +1325,19 @@ body.a11y-underline main a.hero-mosaic-cell { text-decoration: none; }
   padding: 48px 0;
 }
 .key-figures__inner {
-  display: grid;
-  grid-template-columns: 1.8fr repeat(5, 1fr);
-  gap: 24px; align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
 }
-@media (max-width: 900px) { .key-figures__inner { grid-template-columns: 1fr 1fr 1fr; } }
-@media (max-width: 560px) { .key-figures__inner { grid-template-columns: 1fr 1fr; } }
-.key-figures__lead { max-width: 320px; }
+.key-figures__lead { max-width: none; width: 100%; min-width: 0; padding-bottom: 20px; }
 .key-figures__lead .section__eyebrow { color: rgba(255,255,255,0.7); }
 .key-figures__text { font-size: 15px; color: rgba(255,255,255,0.85); margin: 4px 0 0; line-height: 1.45; }
 .key-figures__stat {
-  border-left: 1px solid rgba(255,255,255,0.15);
-  padding-left: 20px;
-}
-/* Grille 3 col : la 1re stat de la 2e ligne reprend en col. 1 — pas de séparateur à gauche */
-@media (max-width: 900px) and (min-width: 561px) {
-  .key-figures__inner > .key-figures__stat:nth-child(4) {
-    border-left: none;
-    padding-left: 0;
-  }
-}
-/* Grille 2 col : stats en col. 1 des lignes 2 et 3 (3e et 5e enfant du bloc) */
-@media (max-width: 560px) {
-  .key-figures__inner > .key-figures__stat:nth-child(3),
-  .key-figures__inner > .key-figures__stat:nth-child(5) {
-    border-left: none;
-    padding-left: 0;
-  }
+  border-left: none;
+  padding-left: 0;
+  border-top: 1px solid rgba(255,255,255,0.15);
+  padding-top: 20px;
 }
 .key-figures__n {
   font-family: var(--font-display); font-weight: 700;
@@ -1578,6 +1613,10 @@ body.variation-c .rubric-tile:nth-child(4) { border-radius: 18px 18px 18px 999px
   width: 100%;
   z-index: 0;
 }
+/* Épinglettes quartiers (Leaflet L.icon data-URL) */
+.leaflet-marker-icon.quartier-leaflet-pin {
+  display: block;
+}
 @media (max-width: 640px) {
   .territoire-map-inner { height: 320px; }
 }
@@ -1606,6 +1645,19 @@ body.variation-c .rubric-tile:nth-child(4) { border-radius: 18px 18px 18px 999px
   border: 1px solid var(--line);
   border-radius: 14px;
   padding: 18px 16px 20px;
+}
+.territoire-quartiers__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px 12px;
+  margin-bottom: 4px;
+}
+.territoire-quartiers__head .territoire-quartiers__title {
+  margin-bottom: 0;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 .territoire-quartiers__title {
   font-family: var(--font-display);

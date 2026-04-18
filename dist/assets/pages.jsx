@@ -5,6 +5,19 @@ function escapeHtml(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 }
 
+/** Icône épingle Leaflet (SVG data-URL), couleur active pour le lieu sélectionné */
+function quartierPinIcon(L, isActive) {
+  const fill = isActive ? '#0d9488' : '#0f5c54';
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="36" viewBox="0 0 28 36" role="img" aria-hidden="true"><path fill="${fill}" stroke="#ffffff" stroke-width="1.25" stroke-linejoin="round" d="M14 1C7.9 1 3 5.8 3 11.5 3 19 14 35 14 35s11-16 11-23.5C25 5.8 20.1 1 14 1z"/><circle fill="#ffffff" cx="14" cy="11.5" r="3.3"/></svg>`;
+  return L.icon({
+    iconUrl: `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`,
+    iconSize: [28, 36],
+    iconAnchor: [14, 36],
+    popupAnchor: [0, -32],
+    className: 'quartier-leaflet-pin',
+  });
+}
+
 const Crumbs = ({ onNavigate, currentLabel }) => (
   <nav className="crumbs" aria-label="Fil d'Ariane">
     <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('home'); }}>Accueil</a>
@@ -288,18 +301,40 @@ const TerritoirePage = ({ onNavigate }) => {
   const mapRef = useRef(null);
   const mapInst = useRef(null);
   const layersById = useRef({});
+  const communeBoundsRef = useRef(null);
+  const selectedIdRef = useRef(null);
   const [selectedId, setSelectedId] = useState(null);
+  const [mapError, setMapError] = useState(null);
   const quartiers = SITE_DATA.quartiers || [];
 
   useEffect(() => {
+    selectedIdRef.current = selectedId;
+  }, [selectedId]);
+
+  const geoBase = () => {
+    const p = window.location.pathname || '';
+    const i = p.lastIndexOf('/');
+    const prefix = i > 0 ? p.slice(0, i) : '';
+    return `${prefix}/assets/geo`;
+  };
+
+  useEffect(() => {
+    let cancelled = false;
     const el = mapRef.current;
-    if (!el || typeof window.L === 'undefined') return undefined;
+    if (!el) return undefined;
+
+    if (typeof window.L === 'undefined') {
+      setMapError('La bibliothèque cartographique ne s’est pas chargée. Vérifiez votre connexion puis rechargez la page.');
+      return undefined;
+    }
 
     if (mapInst.current) {
       mapInst.current.remove();
       mapInst.current = null;
     }
     layersById.current = {};
+    communeBoundsRef.current = null;
+    setMapError(null);
 
     const L = window.L;
     const map = L.map(el, { scrollWheelZoom: false, attributionControl: true });
@@ -309,58 +344,115 @@ const TerritoirePage = ({ onNavigate }) => {
       maxZoom: 19,
     }).addTo(map);
 
-    const tmapCfg = SITE_DATA.territoryMap || { bounds: [[48.705, -3.30], [48.765, -3.18]] };
-    const list = SITE_DATA.quartiers || [];
+    const tmapCfg = SITE_DATA.territoryMap || {};
+    const fallbackBounds = tmapCfg.bounds || [[48.46, -3.56], [48.56, -3.41]];
 
-    const zoneStyle = {
+    const communePathStyle = {
       color: '#0f5c54',
       weight: 2,
-      fillColor: '#2dd4bf',
-      fillOpacity: 0.28,
+      fillColor: '#64748b',
+      fillOpacity: 0.07,
     };
 
-    const group = L.layerGroup();
-    list.forEach((q) => {
-      const popupHtml = `<strong>${escapeHtml(q.nom)}</strong><p style="margin:8px 0 0;font-size:14px;line-height:1.4">${escapeHtml(q.desc || '')}</p>`;
-      let layer;
-      if (q.polygon && Array.isArray(q.polygon) && q.polygon.length >= 3) {
-        layer = L.polygon(q.polygon, zoneStyle).bindPopup(popupHtml);
-      } else if (q.lat != null && q.lng != null) {
-        layer = L.circle([q.lat, q.lng], {
-          radius: q.radiusM || 750,
-          ...zoneStyle,
-        }).bindPopup(popupHtml);
+    (async () => {
+      const base = geoBase();
+      try {
+        const [rComm, rQ] = await Promise.all([
+          fetch(`${base}/commune-22131.geojson`),
+          fetch(`${base}/quartiers-22131.geojson`),
+        ]);
+        if (!rComm.ok || !rQ.ok) throw new Error('geo_fetch');
+        const communeGeo = await rComm.json();
+        const quartiersGeo = await rQ.json();
+        if (cancelled) return;
+
+        const communeLayer = L.geoJSON(communeGeo, {
+          style: () => communePathStyle,
+          interactive: false,
+        }).addTo(map);
+
+        const cb = communeLayer.getBounds();
+        if (cb && typeof cb.isValid === 'function' && cb.isValid()) {
+          communeBoundsRef.current = cb;
+          map.fitBounds(cb, { padding: [16, 16] });
+        } else {
+          map.fitBounds(fallbackBounds, { padding: [16, 16] });
+        }
+
+        L.geoJSON(quartiersGeo, {
+          pointToLayer(feature, latlng) {
+            const id = (feature.properties && feature.properties.id) || '';
+            return L.marker(latlng, {
+              icon: quartierPinIcon(L, id === selectedIdRef.current),
+            });
+          },
+          onEachFeature(feature, layer) {
+            const p = feature.properties || {};
+            const id = p.id;
+            if (!id) return;
+            const popupHtml = `<strong>${escapeHtml(p.nom || '')}</strong><p style="margin:8px 0 0;font-size:14px;line-height:1.4">${escapeHtml(p.desc || '')}</p>`;
+            layer.bindPopup(popupHtml);
+            layer.on('click', () => { setSelectedId(id); });
+            layersById.current[id] = layer;
+          },
+        }).addTo(map);
+
+        Object.keys(layersById.current).forEach((id) => {
+          const layer = layersById.current[id];
+          if (layer && typeof layer.setIcon === 'function') {
+            layer.setIcon(quartierPinIcon(L, id === selectedIdRef.current));
+          }
+        });
+
+        setTimeout(() => { if (!cancelled && mapInst.current) mapInst.current.invalidateSize(); }, 0);
+      } catch (e) {
+        if (!cancelled) {
+          setMapError('Impossible de charger la carte du territoire (fichiers géographiques). Les données affichées peuvent être incomplètes.');
+          map.fitBounds(fallbackBounds, { padding: [16, 16] });
+        }
       }
-      if (!layer) return;
-      layer.on('click', () => { setSelectedId(q.id); });
-      layer.addTo(group);
-      layersById.current[q.id] = layer;
-    });
-    group.addTo(map);
-    map.fitBounds(tmapCfg.bounds);
+    })();
 
     return () => {
+      cancelled = true;
       if (mapInst.current) {
         mapInst.current.remove();
         mapInst.current = null;
       }
       layersById.current = {};
+      communeBoundsRef.current = null;
     };
   }, []);
 
   useEffect(() => {
     const map = mapInst.current;
+    const L = window.L;
+    if (L && map && layersById.current && Object.keys(layersById.current).length) {
+      Object.keys(layersById.current).forEach((id) => {
+        const layer = layersById.current[id];
+        if (layer && typeof layer.setIcon === 'function') {
+          layer.setIcon(quartierPinIcon(L, id === selectedId));
+        }
+      });
+    }
     if (!map || !selectedId) return;
     const layer = layersById.current[selectedId];
     if (!layer) return;
-    const b = typeof layer.getBounds === 'function' ? layer.getBounds() : null;
-    if (b && b.isValid()) {
-      map.flyToBounds(b, { padding: [28, 28], maxZoom: 14, duration: 0.6 });
-    } else if (typeof layer.getLatLng === 'function') {
-      map.flyTo(layer.getLatLng(), 14, { duration: 0.6 });
+    if (typeof layer.getLatLng === 'function') {
+      map.flyTo(layer.getLatLng(), 16, { duration: 0.55, animate: true });
     }
     if (typeof layer.openPopup === 'function') layer.openPopup();
   }, [selectedId]);
+
+  const resetMapView = () => {
+    setSelectedId(null);
+    const map = mapInst.current;
+    if (map) map.closePopup();
+    const b = communeBoundsRef.current;
+    if (map && b && b.isValid && b.isValid()) {
+      map.flyToBounds(b, { padding: [16, 16], duration: 0.55 });
+    }
+  };
 
   const intro = SITE_DATA.territoireIntro || {};
 
@@ -379,12 +471,20 @@ const TerritoirePage = ({ onNavigate }) => {
           <div className="site-prose" style={{ maxWidth: 'none' }}>
             <p>{intro.noteCarte}</p>
           </div>
+          {mapError ? (
+            <p className="territoire-map-status" role="alert">{mapError}</p>
+          ) : null}
           <div className="territoire-map-layout">
             <div className="territoire-map-wrap" role="region" aria-label="Carte interactive des quartiers">
               <div ref={mapRef} id="territoire-map" className="territoire-map-inner" />
             </div>
             <aside className="territoire-quartiers" aria-labelledby="quartiers-title">
-              <h2 id="quartiers-title" className="territoire-quartiers__title">Quartiers & hameaux</h2>
+              <div className="territoire-quartiers__head">
+                <h2 id="quartiers-title" className="territoire-quartiers__title">Quartiers & hameaux</h2>
+                <button type="button" className="btn btn--sm btn--secondary" onClick={resetMapView}>
+                  Toute la commune
+                </button>
+              </div>
               <p className="territoire-quartiers__hint">Sélectionnez un lieu pour zoomer sur la carte.</p>
               <ul className="territoire-quartiers__list">
                 {quartiers.map((q) => (

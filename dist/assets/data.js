@@ -187,30 +187,29 @@ window.SITE_DATA = {
   territoireIntro: {
     title: 'Le bourg et ses hameaux',
     lead: "Loguivy-Plougras, c'est un bourg et une vingtaine de villages et lieux-dits répartis sur 4 800 hectares. Chaque hameau a son caractère, son chemin, sa fontaine.",
-    noteCarte: "Cliquez sur une zone colorée ou sur un nom dans la liste pour zoomer et afficher le descriptif. Les contours sont indicatifs (prototype) : à remplacer par un tracé officiel (cadastre, SIG) en production.",
+    noteCarte: "Cliquez sur une zone colorée ou sur un nom dans la liste pour zoomer et afficher le descriptif. Le contour communal suit l’API Découpage administratif (Admin Express, commune 22131) ; les secteurs colorés s’appuient sur des repères du finage (OpenStreetMap, avril 2026), sans valeur cadastrale.",
   },
 
   /**
-   * Quartiers / hameaux — carte Leaflet (cercles en mètres, centrages approximatifs pour le prototype).
-   * Ajuster lat, lng, radiusM ou remplacer par un tableau polygon: [[lat,lng], ...] si vous exportez du GeoJSON.
+   * Quartiers / hameaux — libellés pour la liste (géométrie : assets/geo/quartiers-22131.geojson).
    */
   quartiers: [
-    { id: 'bourg', nom: 'Le Bourg', lat: 48.7363, lng: -3.2415, radiusM: 900, desc: 'Centre administratif, école, commerces de proximité, agence postale.' },
-    { id: 'dresnay', nom: 'Le Dresnay', lat: 48.7285, lng: -3.2210, radiusM: 750, desc: 'Hameau au sud-est, gîte communal et chemins de randonnée.' },
-    { id: 'kerprigent', nom: 'Kerprigent', lat: 48.7448, lng: -3.2520, radiusM: 700, desc: 'Bocage et hameaux dispersés vers le nord-ouest.' },
-    { id: 'loc-maria', nom: 'Loc-Maria', lat: 48.7215, lng: -3.2580, radiusM: 650, desc: 'Chapelle et patrimoine religieux, concerts estivaux.' },
-    { id: 'kergadiou', nom: 'Kergadiou', lat: 48.7510, lng: -3.2180, radiusM: 720, desc: 'Hameaux vallonnés, vue vers la forêt de Beffou.' },
-    { id: 'kerguiniou', nom: 'Kerguiniou', lat: 48.7310, lng: -3.2780, radiusM: 680, desc: 'Secteur ouest, chemins creux et fontaines.' },
-    { id: 'coat-glas', nom: 'Coat-Glas', lat: 48.7475, lng: -3.2680, radiusM: 700, desc: 'Landes et haies, accès sentiers pédestres.' },
-    { id: 'pen-ar-hoat', nom: 'Pen-ar-Hoat', lat: 48.7175, lng: -3.2280, radiusM: 800, desc: 'Sud du territoire, liaison vers les routes de Plougras.' },
-    { id: 'keribyou', nom: 'Keribyou', lat: 48.7535, lng: -3.2390, radiusM: 620, desc: 'Nord-est, habitat groupé et lotissements ruraux.' },
+    { id: 'bourg', nom: 'Le Bourg', desc: 'Centre administratif, école, commerces de proximité, agence postale.' },
+    { id: 'dresnay', nom: 'Le Dresnay', desc: 'Hameau au sud-est, gîte communal et chemins de randonnée.' },
+    { id: 'kerprigent', nom: 'Kerprigent', desc: 'Bocage et hameaux dispersés vers le nord-ouest.' },
+    { id: 'loc-maria', nom: 'Loc-Maria', desc: 'Patrimoine religieux et concerts (repère carte : chapelle Saint-Ivy, Kérouégoat).' },
+    { id: 'kergadiou', nom: 'Kergadiou', desc: 'Hameaux vallonnés, vue vers la forêt de Beffou.' },
+    { id: 'kerguiniou', nom: 'Kerguiniou', desc: 'Secteur ouest, chemins creux et fontaines.' },
+    { id: 'coat-glas', nom: 'Coat-Glas', desc: 'Landes et haies, accès sentiers pédestres.' },
+    { id: 'pen-ar-hoat', nom: 'Pen-ar-Hoat', desc: 'Sud du territoire, liaison vers les routes de Plougras.' },
+    { id: 'keribyou', nom: 'Keribyou', desc: 'Nord-est, habitat groupé et lotissements ruraux.' },
   ],
 
-  /** Emprise carte (ajustée aux quartiers ci-dessus) */
+  /** Emprise de secours si les GeoJSON ne se chargent pas (emprise réelle ~48,47–48,55 / -3,55–-3,42) */
   territoryMap: {
-    center: [48.735, -3.24],
+    center: [48.511, -3.482],
     zoom: 12,
-    bounds: [[48.705, -3.30], [48.765, -3.18]],
+    bounds: [[48.465, -3.555], [48.555, -3.415]],
   },
 
   demarchesCategories: [
