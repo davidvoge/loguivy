@@ -68,9 +68,16 @@ const Header = ({ active = 'accueil', onNavigate, layoutKey }) => {
               <span className="brand__sub">Commune des Côtes-d'Armor · Bretagne</span>
             </div>
           </a>
-          <button className="nav-toggle" onClick={() => setOpen(!open)} aria-expanded={open} aria-controls="primary-nav">
-            <SiteIcon name={open ? 'close' : 'menu'} size={18} />
-            <span>Menu</span>
+          <button
+            type="button"
+            className="nav-toggle"
+            onClick={() => setOpen(!open)}
+            aria-expanded={open}
+            aria-controls="primary-nav"
+            aria-label={open ? 'Fermer le menu de navigation' : 'Ouvrir le menu de navigation'}
+          >
+            <SiteIcon name={open ? 'close' : 'menu'} size={18} aria-hidden="true" />
+            <span className="nav-toggle__label">Menu</span>
           </button>
           <nav id="primary-nav" className={`primary-nav ${open ? 'is-open' : ''}`} aria-label="Navigation principale">
             {SITE_DATA.nav.map(n => (

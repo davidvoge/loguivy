@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Loguivy-Plougras — Site officiel de la commune</title>
+  <meta name="description" content="Site officiel de la commune de Loguivy-Plougras (Côtes-d'Armor). Démarches, actualités, patrimoine, vie locale." />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="stylesheet" crossorigin href="/assets/index-BJo6ELAz.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Aller au contenu principal</a>
+
+  <div id="root"></div>
+
+  <script>
+    // EDITMODE tweak defaults live in data.js; duplicated here for the host parser.
+    const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+      "variation": "a",
+      "page": "home",
+      "showStripes": true
+    }/*EDITMODE-END*/;
+  </script>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script src="assets/data.js?v=11"></script>
+  <script type="text/babel" src="assets/icons.jsx?v=11"></script>
+  <script type="text/babel" src="assets/chrome.jsx?v=11"></script>
+  <script type="text/babel" src="assets/home.jsx?v=11"></script>
+  <script type="text/babel" src="assets/pages.jsx?v=11"></script>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const VARIATION_LABELS = {
+      a: 'Institutionnel',
+      b: 'Modulaire',
+      c: 'Éditorial',
+    };
+
+    const App = () => {
+      const [variation, setVariation] = useState(localStorage.getItem('lp-variation') || TWEAK_DEFAULTS.variation || 'a');
+      const [page, setPage] = useState(localStorage.getItem('lp-page') || 'home');
+      const [flashy, setFlashy] = useState(localStorage.getItem('lp-flashy') === '1');
+      const [tweaksOpen, setTweaksOpen] = useState(false);
+      const [editMode, setEditMode] = useState(false);
+
+      // Apply variation to body
+      useEffect(() => {
+        document.body.classList.remove('variation-a', 'variation-b', 'variation-c');
+        document.body.classList.add(`variation-${variation}`);
+        localStorage.setItem('lp-variation', variation);
+      }, [variation]);
+
+      useEffect(() => { localStorage.setItem('lp-page', page); }, [page]);
+
+      useEffect(() => {
+        window.scrollTo(0, 0);
+      }, [page]);
+
+      useEffect(() => {
+        document.body.classList.toggle('flashy', flashy);
+        localStorage.setItem('lp-flashy', flashy ? '1' : '0');
+      }, [flashy]);
+
+      // Edit mode protocol
+      useEffect(() => {
+        const onMsg = (e) => {
+          if (!e.data || typeof e.data !== 'object') return;
+          if (e.data.type === '__activate_edit_mode') setEditMode(true);
+          if (e.data.type === '__deactivate_edit_mode') setEditMode(false);
+        };
+        window.addEventListener('message', onMsg);
+        window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+        return () => window.removeEventListener('message', onMsg);
+      }, []);
+
+      const setVar = (v) => {
+        setVariation(v);
+        window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { variation: v } }, '*');
+      };
+
+      const activeNavMap = { home: 'accueil', territoire: 'territoire', mairie: 'mairie', demarches: 'demarches', culture: 'culture', 'vie-locale': 'vie-locale' };
+      const activeNav = activeNavMap[page] || '';
+
+      const previewPages = [
+        { k: 'home', l: 'Accueil' },
+        { k: 'territoire', l: 'Territoire' },
+        { k: 'mairie', l: 'Mairie' },
+        { k: 'demarches', l: 'Démarches' },
+        { k: 'culture', l: 'Culture' },
+        { k: 'vie-locale', l: 'Vie locale' },
+        { k: 'plan-site', l: 'Plan du site' },
+        { k: 'mentions-legales', l: 'Mentions légales' },
+        { k: 'donnees-personnelles', l: 'Données perso.' },
+        { k: 'accessibilite', l: 'Accessibilité' },
+      ];
+
+      return (
+        <React.Fragment>
+          <UtilityStrip onNavigate={setPage} />
+          <Header active={activeNav} onNavigate={setPage} layoutKey={page} />
+
+          <main id="main" role="main">
+            {page === 'home' && (
+              <React.Fragment>
+                <Hero variation={variation} onNavigate={setPage} />
+                <QuickAccess onNavigate={setPage} />
+                <Bulletin />
+                <KeyFigures onNavigate={setPage} />
+                <Rubrics onNavigate={setPage} />
+                <VillageBand variant="orange" />
+                <News />
+                <Services />
+                <Agenda />
+                <Villages onNavigate={setPage} />
+                <VillageBand variant="green" />
+                <Discover onNavigate={setPage} />
+                <InfoBar />
+              </React.Fragment>
+            )}
+            {page === 'territoire' && <TerritoirePage onNavigate={setPage} />}
+            {page === 'demarches' && <DemarchesPage onNavigate={setPage} />}
+            {page === 'culture' && <CulturePage onNavigate={setPage} />}
+            {page === 'mairie' && <MairiePage onNavigate={setPage} />}
+            {page === 'vie-locale' && <VieLocalePage onNavigate={setPage} />}
+            {page === 'plan-site' && <PlanSitePage onNavigate={setPage} />}
+            {page === 'mentions-legales' && <MentionsLegalesPage onNavigate={setPage} />}
+            {page === 'donnees-personnelles' && <DonneesPersonnellesPage onNavigate={setPage} />}
+            {page === 'accessibilite' && <AccessibilitePage onNavigate={setPage} />}
+          </main>
+
+          <Footer onNavigate={setPage} />
+          <A11yWidget onNavigate={setPage} />
+
+          {editMode && (
+            <div className="tweaks-panel is-open" role="dialog" aria-label="Tweaks">
+              <h3>
+                Tweaks
+                <button onClick={() => setEditMode(false)} aria-label="Fermer">
+                  <SiteIcon name="close" size={16} />
+                </button>
+              </h3>
+
+              <div className="tweak-group">
+                <div className="tweak-group__label">Palette de couleurs</div>
+                <div className="tweak-options">
+                  <button onClick={() => setFlashy(false)}
+                          className={`tweak-option ${!flashy ? 'is-active' : ''}`}>Adoucie (pastel)</button>
+                  <button onClick={() => setFlashy(true)}
+                          className={`tweak-option ${flashy ? 'is-active' : ''}`}>Affirmée (campagne)</button>
+                </div>
+                <p style={{fontSize: 11, color: 'var(--ink-mute)', margin: '8px 0 0', lineHeight: 1.4}}>
+                  Pastel = ton institutionnel post-élection. Affirmée = palette d'origine de Loguivy Autrement.
+                </p>
+              </div>
+
+              <div className="tweak-group">
+                <div className="tweak-group__label">Direction de la homepage</div>
+                <div className="tweak-options">
+                  {['a', 'b', 'c'].map(v => (
+                    <button key={v} onClick={() => setVar(v)}
+                            className={`tweak-option ${variation === v ? 'is-active' : ''}`}>
+                      {VARIATION_LABELS[v]}
+                    </button>
+                  ))}
+                </div>
+                <p style={{fontSize: 11, color: 'var(--ink-mute)', margin: '8px 0 0', lineHeight: 1.4}}>
+                  A — cadre classique (photo village, accès rapide, rubriques).<br/>
+                  B — mosaïque 4 couleurs en plein écran.<br/>
+                  C — ton éditorial, hero chaleureux.
+                </p>
+              </div>
+
+              <div className="tweak-group">
+                <div className="tweak-group__label">Page affichée</div>
+                <div className="tweak-options">
+                  {previewPages.map(p => (
+                    <button key={p.k} onClick={() => setPage(p.k)}
+                            className={`tweak-option ${page === p.k ? 'is-active' : ''}`}>
+                      {p.l}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <p style={{fontSize: 11, color: 'var(--ink-mute)', margin: '14px 0 0', lineHeight: 1.4, paddingTop: 10, borderTop: '1px solid var(--line)'}}>
+                Le widget d'accessibilité (coin inférieur droit) est toujours actif et offre
+                taille de texte, contraste et liens soulignés — conforme RGAA 4.1 AA.
+              </p>
+            </div>
+          )}
+        </React.Fragment>
+      );
+    };
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

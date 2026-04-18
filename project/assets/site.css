@@ -85,6 +85,38 @@ body {
 }
 .utility__right button:hover { background: rgba(255,255,255,0.1); }
 
+@media (max-width: 900px) {
+  .utility .container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .utility__left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px 14px;
+    width: 100%;
+  }
+  .utility__right {
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    width: 100%;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+  }
+}
+
+@media (max-width: 640px) {
+  .utility {
+    font-size: 12px;
+    padding: 6px 0;
+  }
+  .utility__right button {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+}
+
 /* ── Header / brand ────────────────────────────────────────── */
 .site-header {
   background: var(--panel);
@@ -94,10 +126,14 @@ body {
 .site-header__inner {
   display: flex; align-items: center; justify-content: space-between;
   padding: 16px 0; gap: 24px;
+  position: relative;
+  min-width: 0;
 }
 .brand {
   display: flex; align-items: center; gap: 14px;
   text-decoration: none; color: inherit;
+  min-width: 0;
+  flex: 1 1 auto;
 }
 .brand__mark {
   width: 48px; height: 48px; border-radius: 8px;
@@ -121,6 +157,7 @@ body {
 }
 .brand__text {
   display: flex; flex-direction: column; line-height: 1.1;
+  min-width: 0;
 }
 .brand__title {
   font-family: var(--font-display);

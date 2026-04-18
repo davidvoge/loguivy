@@ -2,6 +2,8 @@
  * Post-election palette: softer, more civic than campaign.
  * Think: "city identity" — warm paper, muted thematic hues, calm type. */
 
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap");
+
 /* ── Fonts (self-hosted Barlow, Inter from Google) ───────────── */
 @font-face { font-family: "Barlow"; font-style: normal; font-weight: 100; font-display: swap; src: url("fonts/Barlow-Thin.ttf") format("truetype"); }
 @font-face { font-family: "Barlow"; font-style: italic; font-weight: 100; font-display: swap; src: url("fonts/Barlow-ThinItalic.ttf") format("truetype"); }
@@ -21,8 +23,6 @@
 @font-face { font-family: "Barlow"; font-style: italic; font-weight: 800; font-display: swap; src: url("fonts/Barlow-ExtraBoldItalic.ttf") format("truetype"); }
 @font-face { font-family: "Barlow"; font-style: normal; font-weight: 900; font-display: swap; src: url("fonts/Barlow-Black.ttf") format("truetype"); }
 @font-face { font-family: "Barlow"; font-style: italic; font-weight: 900; font-display: swap; src: url("fonts/Barlow-BlackItalic.ttf") format("truetype"); }
-
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap");
 
 :root {
   /* ── Color — softened thematic palette ─────────────────────── */
