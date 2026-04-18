@@ -6,7 +6,7 @@
   <title>Loguivy-Plougras — Site officiel de la commune</title>
   <meta name="description" content="Site officiel de la commune de Loguivy-Plougras (Côtes-d'Armor). Démarches, actualités, patrimoine, vie locale." />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-  <link rel="stylesheet" crossorigin href="/assets/index-BJo6ELAz.css">
+  <link rel="stylesheet" crossorigin href="/assets/index-DzkGpCTS.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Aller au contenu principal</a>
@@ -27,11 +27,11 @@
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 
-  <script src="assets/data.js?v=11"></script>
-  <script type="text/babel" src="assets/icons.jsx?v=11"></script>
-  <script type="text/babel" src="assets/chrome.jsx?v=11"></script>
-  <script type="text/babel" src="assets/home.jsx?v=11"></script>
-  <script type="text/babel" src="assets/pages.jsx?v=11"></script>
+  <script src="/assets/data.js?v=11"></script>
+  <script type="text/babel" src="/assets/icons.jsx?v=11"></script>
+  <script type="text/babel" src="/assets/chrome.jsx?v=11"></script>
+  <script type="text/babel" src="/assets/home.jsx?v=11"></script>
+  <script type="text/babel" src="/assets/pages.jsx?v=11"></script>
 
   <script type="text/babel">
     const { useState, useEffect } = React;
@@ -84,7 +84,11 @@
         window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { variation: v } }, '*');
       };
 
-      const activeNavMap = { home: 'accueil', territoire: 'territoire', mairie: 'mairie', demarches: 'demarches', culture: 'culture', 'vie-locale': 'vie-locale' };
+      const activeNavMap = {
+        mairie: 'mairie',
+        demarches: 'demarches',
+        culture: 'culture',
+      };
       const activeNav = activeNavMap[page] || '';
 
       const previewPages = [

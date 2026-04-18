@@ -1,9 +1,140 @@
 // Chrome: header, utility strip, footer, A11y widget, Tweaks panel
-const { useState, useEffect, useRef } = React;
+const { useState, useEffect, useRef, useMemo, useCallback } = React;
+
+const SEARCH_PAGE_LABELS = {
+  home: 'Accueil',
+  territoire: 'Territoire',
+  mairie: 'Mairie',
+  demarches: 'Démarches',
+  culture: 'Culture et tourisme',
+  'vie-locale': 'Vie locale',
+  'plan-site': 'Plan du site',
+  'mentions-legales': 'Mentions légales',
+  'donnees-personnelles': 'Données personnelles',
+  accessibilite: 'Accessibilité',
+};
+
+const searchNormalize = (s) =>
+  String(s || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+
+const SiteSearchModal = ({ open, onClose, onNavigate }) => {
+  const [query, setQuery] = useState('');
+  const inputRef = useRef(null);
+  const index = SITE_DATA.searchIndex || [];
+
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+
+  useEffect(() => {
+    if (!open) return;
+    setQuery('');
+    const id = requestAnimationFrame(() => inputRef.current?.focus());
+    const onKey = (e) => {
+      if (e.key === 'Escape') onCloseRef.current();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => {
+      cancelAnimationFrame(id);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
+  const results = useMemo(() => {
+    const qn = searchNormalize(query);
+    if (!qn) return [];
+    const scored = [];
+    for (const entry of index) {
+      const ln = searchNormalize(entry.label);
+      const cn = searchNormalize(entry.category);
+      let score = 0;
+      if (ln.startsWith(qn)) score = 4;
+      else if (ln.includes(qn)) score = 3;
+      else if (cn.includes(qn)) score = 2;
+      if (score) scored.push({ entry, score });
+    }
+    scored.sort((a, b) => b.score - a.score || a.entry.label.localeCompare(b.entry.label, 'fr'));
+    return scored.slice(0, 12).map((s) => s.entry);
+  }, [query, index]);
+
+  if (!open) return null;
+
+  const titleId = 'site-search-title';
+  const go = (page) => {
+    onNavigate(page);
+    onClose();
+  };
+
+  const modal = (
+    <div className="site-search" role="presentation">
+      <div className="site-search__backdrop" onClick={onClose} aria-hidden="true" />
+      <div
+        className="site-search__dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+      >
+        <div className="site-search__head">
+          <h2 id={titleId} className="site-search__title">Rechercher sur le site</h2>
+          <button type="button" className="site-search__close" onClick={onClose} aria-label="Fermer la recherche">
+            <SiteIcon name="close" size={18} />
+          </button>
+        </div>
+        <label className="site-search__label" htmlFor="site-search-input">Votre recherche</label>
+        <input
+          ref={inputRef}
+          id="site-search-input"
+          type="search"
+          className="site-search__input"
+          placeholder="Ex. urbanisme, médiathèque, conseil…"
+          autoComplete="off"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+        <div className="site-search__results-wrap">
+          {!searchNormalize(query) && (
+            <p className="site-search__hint">Saisissez un mot-clé pour afficher les pages et rubriques du prototype.</p>
+          )}
+          {searchNormalize(query) && results.length === 0 && (
+            <p className="site-search__empty">Aucun résultat pour « {query.trim()} ».</p>
+          )}
+          {results.length > 0 && (
+            <ul className="site-search__list" aria-label="Résultats de recherche">
+              {results.map((entry) => (
+                <li key={`${entry.page}-${entry.label}`}>
+                  <button
+                    type="button"
+                    className="site-search__item"
+                    onClick={() => go(entry.page)}
+                  >
+                    <span className="site-search__item-label">{entry.label}</span>
+                    <span className="site-search__item-meta">
+                      {SEARCH_PAGE_LABELS[entry.page] || entry.page}
+                      {entry.category ? ` · ${entry.category}` : ''}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
+  return typeof ReactDOM !== 'undefined' && ReactDOM.createPortal
+    ? ReactDOM.createPortal(modal, document.body)
+    : modal;
+};
 
 const UtilityStrip = ({ onNavigate }) => {
+  const [searchOpen, setSearchOpen] = useState(false);
+  const closeSearch = useCallback(() => setSearchOpen(false), []);
   const c = SITE_DATA.contact;
   return (
+  <>
   <div className="utility" role="complementary" aria-label="Informations pratiques">
     <div className="container">
       <div className="utility__left">
@@ -14,12 +145,20 @@ const UtilityStrip = ({ onNavigate }) => {
       <div className="utility__right">
         <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('plan-site'); }}>Plan du site</a>
         <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('accessibilite'); }}>Accessibilité</a>
-        <button type="button" aria-label="Rechercher sur le site">
+        <button
+          type="button"
+          aria-label="Rechercher sur le site"
+          aria-expanded={searchOpen}
+          aria-haspopup="dialog"
+          onClick={() => setSearchOpen(true)}
+        >
           <SiteIcon name="search" size={12} /> <span style={{marginLeft:4}}>Rechercher</span>
         </button>
       </div>
     </div>
   </div>
+  <SiteSearchModal open={searchOpen} onClose={closeSearch} onNavigate={onNavigate} />
+  </>
   );
 };
 
@@ -76,7 +215,7 @@ const Header = ({ active = 'accueil', onNavigate, layoutKey }) => {
             aria-controls="primary-nav"
             aria-label={open ? 'Fermer le menu de navigation' : 'Ouvrir le menu de navigation'}
           >
-            <SiteIcon name={open ? 'close' : 'menu'} size={18} aria-hidden="true" />
+            <SiteIcon name={open ? 'close' : 'menu'} size={18} />
             <span className="nav-toggle__label">Menu</span>
           </button>
           <nav id="primary-nav" className={`primary-nav ${open ? 'is-open' : ''}`} aria-label="Navigation principale">

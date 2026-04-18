@@ -1,4 +1,4 @@
-// Loguivy-Plougras — shared data (structure alignée sur loguivy-plougras.fr, réorganisée pour la nav à 5 piliers)
+// Loguivy-Plougras — shared data (structure alignée sur loguivy-plougras.fr)
 window.SITE_DATA = {
   contact: {
     phoneDisplay: '02 96 38 52 59',
@@ -11,12 +11,9 @@ window.SITE_DATA = {
   },
 
   nav: [
-    { id: 'accueil', label: 'Accueil', targetPage: 'home', theme: 'teal' },
-    { id: 'territoire', label: 'Le territoire', targetPage: 'territoire', theme: 'green' },
-    { id: 'mairie', label: 'La mairie', targetPage: 'mairie', theme: 'teal' },
-    { id: 'demarches', label: 'Mes démarches', targetPage: 'demarches', theme: 'purple' },
-    { id: 'culture', label: 'Culture & tourisme', targetPage: 'culture', theme: 'orange' },
-    { id: 'vie-locale', label: 'Vie locale', targetPage: 'vie-locale', theme: 'green' },
+    { id: 'mairie', label: 'Mairie', targetPage: 'mairie', theme: 'teal' },
+    { id: 'demarches', label: 'Démarches', targetPage: 'demarches', theme: 'purple' },
+    { id: 'culture', label: 'Culture et tourisme', targetPage: 'culture', theme: 'orange' },
   ],
 
   /** Sections du plan du site (navigation interne du prototype) */
@@ -383,3 +380,33 @@ window.SITE_DATA = {
     },
   ],
 };
+
+(function registerSiteSearchIndex() {
+  const d = window.SITE_DATA;
+  const rows = [];
+  const seen = new Set();
+  const add = (label, page, category) => {
+    const text = String(label || '').trim();
+    if (!text || !page) return;
+    const k = `${page}::${text.toLowerCase()}`;
+    if (seen.has(k)) return;
+    seen.add(k);
+    rows.push({ label: text, page, category: String(category || '').trim() });
+  };
+  d.nav.forEach((n) => add(n.label, n.targetPage, 'Menu principal'));
+  d.siteMapSections.forEach((sec) => {
+    add(sec.title, sec.page, 'Rubrique');
+    sec.links.forEach((l) => add(l.label, l.page, sec.title));
+  });
+  d.footerColumns.forEach((col) => {
+    col.links.forEach((l) => add(l.label, l.page, col.title));
+  });
+  (d.quickAccess || []).forEach((q) => add(q.title, q.targetPage, 'Accès rapide'));
+  (d.rubrics || []).forEach((r) => {
+    add(r.title.replace(/\n/g, ' ').trim(), r.targetPage, r.eyebrow || 'Rubrique');
+  });
+  (d.mairieTiles || []).forEach((t) => add(t.title, 'mairie', t.eyebrow || 'Mairie'));
+  (d.vieLocaleTiles || []).forEach((t) => add(t.title, 'vie-locale', t.eyebrow || 'Vie locale'));
+  (d.culturePillars || []).forEach((t) => add(t.title, 'culture', t.l || 'Culture'));
+  d.searchIndex = rows;
+})();
