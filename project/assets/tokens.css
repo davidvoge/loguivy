@@ -1,0 +1,361 @@
+/* Loguivy Autrement — Design Tokens
+ * Post-election palette: softer, more civic than campaign.
+ * Think: "city identity" — warm paper, muted thematic hues, calm type. */
+
+/* ── Fonts (self-hosted Barlow, Inter from Google) ───────────── */
+@font-face { font-family: "Barlow"; font-style: normal; font-weight: 100; font-display: swap; src: url("fonts/Barlow-Thin.ttf") format("truetype"); }
+@font-face { font-family: "Barlow"; font-style: italic; font-weight: 100; font-display: swap; src: url("fonts/Barlow-ThinItalic.ttf") format("truetype"); }
+@font-face { font-family: "Barlow"; font-style: normal; font-weight: 200; font-display: swap; src: url("fonts/Barlow-ExtraLight.ttf") format("truetype"); }
+@font-face { font-family: "Barlow"; font-style: italic; font-weight: 200; font-display: swap; src: url("fonts/Barlow-ExtraLightItalic.ttf") format("truetype"); }
+@font-face { font-family: "Barlow"; font-style: normal; font-weight: 300; font-display: swap; src: url("fonts/Barlow-Light.ttf") format("truetype"); }
+@font-face { font-family: "Barlow"; font-style: italic; font-weight: 300; font-display: swap; src: url("fonts/Barlow-LightItalic.ttf") format("truetype"); }
+@font-face { font-family: "Barlow"; font-style: normal; font-weight: 400; font-display: swap; src: url("fonts/Barlow-Regular.ttf") format("truetype"); }
+@font-face { font-family: "Barlow"; font-style: italic; font-weight: 400; font-display: swap; src: url("fonts/Barlow-Italic.ttf") format("truetype"); }
+@font-face { font-family: "Barlow"; font-style: normal; font-weight: 500; font-display: swap; src: url("fonts/Barlow-Medium.ttf") format("truetype"); }
+@font-face { font-family: "Barlow"; font-style: italic; font-weight: 500; font-display: swap; src: url("fonts/Barlow-MediumItalic.ttf") format("truetype"); }
+@font-face { font-family: "Barlow"; font-style: normal; font-weight: 600; font-display: swap; src: url("fonts/Barlow-SemiBold.ttf") format("truetype"); }
+@font-face { font-family: "Barlow"; font-style: italic; font-weight: 600; font-display: swap; src: url("fonts/Barlow-SemiBoldItalic.ttf") format("truetype"); }
+@font-face { font-family: "Barlow"; font-style: normal; font-weight: 700; font-display: swap; src: url("fonts/Barlow-Bold.ttf") format("truetype"); }
+@font-face { font-family: "Barlow"; font-style: italic; font-weight: 700; font-display: swap; src: url("fonts/Barlow-BoldItalic.ttf") format("truetype"); }
+@font-face { font-family: "Barlow"; font-style: normal; font-weight: 800; font-display: swap; src: url("fonts/Barlow-ExtraBold.ttf") format("truetype"); }
+@font-face { font-family: "Barlow"; font-style: italic; font-weight: 800; font-display: swap; src: url("fonts/Barlow-ExtraBoldItalic.ttf") format("truetype"); }
+@font-face { font-family: "Barlow"; font-style: normal; font-weight: 900; font-display: swap; src: url("fonts/Barlow-Black.ttf") format("truetype"); }
+@font-face { font-family: "Barlow"; font-style: italic; font-weight: 900; font-display: swap; src: url("fonts/Barlow-BlackItalic.ttf") format("truetype"); }
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap");
+
+:root {
+  /* ── Color — softened thematic palette ─────────────────────── */
+  /* The original campaign colors are kept as "strong" accents for logos
+     and very rare moments. Everything else runs on the muted/soft
+     derivatives — these are what the "city brand" feels like day-to-day. */
+
+  /* ── Teal scale (primary city color) ─────────────────────── */
+  --teal-50:  #F1F8F7;
+  --teal-100: #DCEDEA;
+  --teal-200: #C2DFDB;
+  --teal-300: #9ECDC6;
+  --teal-400: #7DBEB6;
+  --teal-500: #6FB3AC;   /* muted — default UI accent */
+  --teal-600: #4F9E96;
+  --teal-700: #2D8B84;   /* strong */
+  --teal-800: #2B5C58;   /* deep — text on pastel */
+  --teal-900: #1C3F3C;
+
+  /* ── Purple scale ────────────────────────────────────────── */
+  --purple-50:  #F4F1F7;
+  --purple-100: #E8E3EE;
+  --purple-200: #D6CEDF;
+  --purple-300: #BDB1CC;
+  --purple-400: #AA9BBE;
+  --purple-500: #9C8CB2;
+  --purple-600: #86749F;
+  --purple-700: #7A6292;
+  --purple-800: #4E3F5F;
+  --purple-900: #362B42;
+
+  /* ── Orange scale ────────────────────────────────────────── */
+  --orange-50:  #FAF1EA;
+  --orange-100: #F5E4D7;
+  --orange-200: #EDCDB7;
+  --orange-300: #E4B492;
+  --orange-400: #DEA581;
+  --orange-500: #D99A72;
+  --orange-600: #CF8758;
+  --orange-700: #C97A4A;
+  --orange-800: #7D4A2A;
+  --orange-900: #53321C;
+
+  /* ── Green scale ─────────────────────────────────────────── */
+  --green-50:  #F3F6EC;
+  --green-100: #E5ECD8;
+  --green-200: #D2DFBA;
+  --green-300: #BED098;
+  --green-400: #B2C68F;
+  --green-500: #A8BF86;
+  --green-600: #93AF6C;
+  --green-700: #7A9C52;
+  --green-800: #4E6333;
+  --green-900: #344322;
+
+  /* ── Legacy aliases ──────────────────────────────────────── */
+  --brand-teal-strong:   var(--teal-700);
+  --brand-purple-strong: var(--purple-700);
+  --brand-orange-strong: var(--orange-700);
+  --brand-green-strong:  var(--green-700);
+
+  --brand-teal:   var(--teal-500);
+  --brand-purple: var(--purple-500);
+  --brand-orange: var(--orange-500);
+  --brand-green:  var(--green-500);
+
+  --pastel-teal:   var(--teal-100);
+  --pastel-purple: var(--purple-100);
+  --pastel-orange: var(--orange-100);
+  --pastel-green:  var(--green-100);
+
+  --deep-teal:   var(--teal-800);
+  --deep-purple: var(--purple-800);
+  --deep-orange: var(--orange-800);
+  --deep-green:  var(--green-800);
+
+  /* ── Neutrals — paper & ink ────────────────────────────────── */
+  --paper:       #F7F4EE;   /* default page bg — warm, low contrast */
+  --paper-soft:  #FAF8F3;
+  --panel:       #FFFFFF;
+  --panel-mute:  #F2EFE8;
+
+  --ink:         #2B2A26;   /* body text — not pure black */
+  --ink-2:       #4A4944;   /* secondary */
+  --ink-mute:    #7A7870;   /* tertiary / captions */
+  --line:        #E4DFD4;   /* hairline rules */
+  --line-soft:   rgba(43,42,38,0.08);
+
+  /* Signal (rare — only for status) */
+  --signal-pos:  #6E9A63;
+  --signal-warn: #C99449;
+  --signal-neg:  #B8685F;
+
+  /* ── Typography ────────────────────────────────────────────── */
+  --font-display: "Barlow", "Helvetica Neue", Arial, sans-serif;
+  --font-body:    "Inter", -apple-system, "Segoe UI", Arial, sans-serif;
+
+  /* Scale — tightened for web, no poster sizes */
+  --fs-display:  56px;
+  --fs-h1:       40px;
+  --fs-h2:       30px;
+  --fs-h3:       22px;
+  --fs-h4:       18px;
+  --fs-body-lg:  17px;
+  --fs-body:     15px;
+  --fs-body-sm:  14px;
+  --fs-caption:  13px;
+  --fs-micro:    12px;
+  --fs-eyebrow:  11px;
+
+  /* Line heights */
+  --lh-tight:   1.05;
+  --lh-snug:    1.2;
+  --lh-body:    1.6;
+
+  /* Letter-spacing */
+  --ls-display: -0.015em;
+  --ls-tight:   -0.005em;
+  --ls-eyebrow: 0.14em;
+
+  /* Weights */
+  --fw-reg:  400;
+  --fw-med:  500;
+  --fw-semi: 600;
+  --fw-bold: 700;
+
+  /* ── Spacing (4 px base) ───────────────────────────────────── */
+  --sp-1:  4px;
+  --sp-2:  8px;
+  --sp-3:  12px;
+  --sp-4:  16px;
+  --sp-5:  20px;
+  --sp-6:  24px;
+  --sp-8:  32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+  --sp-20: 80px;
+
+  /* ── Radius ────────────────────────────────────────────────── */
+  --radius-xs:   4px;
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   14px;
+  --radius-pill: 9999px;
+
+  /* ── Shadow — very light; the brand is flat-first ──────────── */
+  --shadow-sm: 0 1px 2px rgba(43,42,38,0.04);
+  --shadow-md: 0 4px 14px rgba(43,42,38,0.06);
+  --shadow-lg: 0 16px 40px -8px rgba(43,42,38,0.10);
+
+  /* ── Motion ────────────────────────────────────────────────── */
+  --ease:      cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-fast:  120ms;
+  --dur:       200ms;
+  --dur-slow:  320ms;
+}
+
+/* ── Base ────────────────────────────────────────────────────── */
+html, body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+* { box-sizing: border-box; }
+
+/* ── Typographic roles ───────────────────────────────────────── */
+.t-display {
+  font-family: var(--font-display);
+  font-weight: var(--fw-semi);
+  font-size: var(--fs-display);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-display);
+  color: var(--ink);
+}
+.t-h1 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-semi);
+  font-size: var(--fs-h1);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight);
+  color: var(--ink);
+}
+.t-h2 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-semi);
+  font-size: var(--fs-h2);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--ls-tight);
+  color: var(--ink);
+}
+.t-h3 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-med);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-snug);
+  color: var(--ink);
+}
+.t-h4 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-med);
+  font-size: var(--fs-h4);
+  line-height: var(--lh-snug);
+  color: var(--ink);
+}
+.t-body-lg {
+  font-size: var(--fs-body-lg);
+  line-height: var(--lh-body);
+  color: var(--ink-2);
+}
+.t-body {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--ink-2);
+}
+.t-caption {
+  font-size: var(--fs-caption);
+  line-height: 1.5;
+  color: var(--ink-mute);
+}
+.t-eyebrow {
+  font-family: var(--font-display);
+  font-weight: var(--fw-med);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+/* ── Buttons ─────────────────────────────────────────────────── */
+.btn {
+  font-family: var(--font-body);
+  font-weight: var(--fw-med);
+  font-size: var(--fs-body-sm);
+  line-height: 1;
+  padding: 11px 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none !important;
+  transition: background var(--dur) var(--ease),
+              color var(--dur) var(--ease),
+              border-color var(--dur) var(--ease),
+              transform var(--dur-fast) var(--ease);
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.btn:active { transform: translateY(1px); }
+.btn:focus-visible {
+  outline: 2px solid var(--brand-teal-strong);
+  outline-offset: 2px;
+}
+
+.btn--primary  {
+  background: var(--teal-200);
+  color: var(--teal-900);
+  border-color: var(--teal-300);
+}
+.btn--primary:hover {
+  background: var(--teal-300);
+  border-color: var(--teal-400);
+}
+
+.btn--secondary { background: var(--panel); color: var(--ink); border-color: var(--line); }
+.btn--secondary:hover { background: var(--panel-mute); }
+
+.btn--ghost    { background: transparent; color: var(--ink); }
+.btn--ghost:hover { background: var(--line-soft); }
+
+.btn--sm { padding: 7px 12px; font-size: var(--fs-caption); border-radius: var(--radius-xs); }
+.btn--lg { padding: 14px 22px; font-size: var(--fs-body); border-radius: var(--radius-md); }
+
+/* ── Inputs ──────────────────────────────────────────────────── */
+.input {
+  font-family: var(--font-body);
+  font-size: var(--fs-body-sm);
+  color: var(--ink);
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--panel);
+  width: 100%;
+  transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.input::placeholder { color: var(--ink-mute); }
+.input:hover { border-color: color-mix(in oklab, var(--line), black 12%); }
+.input:focus {
+  outline: none;
+  border-color: var(--brand-teal-strong);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--brand-teal-strong) 18%, transparent);
+}
+
+/* ── Cards ───────────────────────────────────────────────────── */
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: var(--sp-6);
+}
+.card--soft {
+  background: var(--paper-soft);
+  border-color: transparent;
+}
+
+/* ── Badges & tags ───────────────────────────────────────────── */
+.tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-body);
+  font-weight: var(--fw-med);
+  font-size: var(--fs-micro);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--pastel-teal);
+  color: var(--deep-teal);
+}
+.tag--purple { background: var(--pastel-purple); color: var(--deep-purple); }
+.tag--orange { background: var(--pastel-orange); color: var(--deep-orange); }
+.tag--green  { background: var(--pastel-green);  color: var(--deep-green); }
+.tag--neutral { background: var(--panel-mute); color: var(--ink-2); }
+
+/* ── Divider ─────────────────────────────────────────────────── */
+.hr { height: 1px; background: var(--line); border: 0; margin: var(--sp-6) 0; }
+
+/* ── Link ────────────────────────────────────────────────────── */
+.link {
+  color: var(--deep-teal);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in oklab, var(--deep-teal) 40%, transparent);
+  transition: text-decoration-color var(--dur) var(--ease);
+}
+.link:hover { text-decoration-color: var(--deep-teal); }
